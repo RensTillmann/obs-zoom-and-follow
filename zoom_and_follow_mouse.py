@@ -316,17 +316,13 @@ def script_properties():
 
 def script_load(settings):
     global zoom_id_tog
-    zoom_id_tog = obs.obs_hotkey_register_frontend(
-        ZOOM_NAME_TOG, ZOOM_DESC_TOG, toggle_zoom
-    )
+    zoom_id_tog = obs.obs_hotkey_register_frontend(ZOOM_NAME_TOG, ZOOM_DESC_TOG, toggle_zoom)
     hotkey_save_array = obs.obs_data_get_array(settings, ZOOM_NAME_TOG)
     obs.obs_hotkey_load(zoom_id_tog, hotkey_save_array)
     obs.obs_data_array_release(hotkey_save_array)
 
     global follow_id_tog
-    follow_id_tog = obs.obs_hotkey_register_frontend(
-        FOLLOW_NAME_TOG, FOLLOW_DESC_TOG, toggle_follow
-    )
+    follow_id_tog = obs.obs_hotkey_register_frontend(FOLLOW_NAME_TOG, FOLLOW_DESC_TOG, toggle_follow)
     hotkey_save_array = obs.obs_data_get_array(settings, FOLLOW_NAME_TOG)
     obs.obs_hotkey_load(follow_id_tog, hotkey_save_array)
     obs.obs_data_array_release(hotkey_save_array)
@@ -356,9 +352,11 @@ def toggle_zoom(pressed):
             obs.timer_add(zoom.tick, zoom.refresh_rate)
             zoom.lock = True
             zoom.flag = False
+            zoom.track = True
         elif not zoom.flag:
             zoom.flag = True
             zoom.lock = False
+            zoom.track = False
 
 def toggle_follow(pressed):
     if pressed:
