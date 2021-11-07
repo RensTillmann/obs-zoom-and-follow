@@ -2,6 +2,7 @@ import obspython as obs
 from pynput.mouse import Controller  # python -m pip install pynput
 from screeninfo import get_monitors  # python -m pip install screeninfo
 
+from pprint import pprint
 
 c = Controller()
 get_position = lambda: c.position
@@ -90,10 +91,17 @@ class CursorWindow:
             borderScale = self.d_w
 
         # Get active zone edges
-        zoom_l = self.z_x + int(self.active_border * borderScale)
-        zoom_r = self.z_x + self.zoom_w - int(self.active_border * borderScale)
-        zoom_u = self.z_y + int(self.active_border * borderScale)
-        zoom_d = self.z_y + self.zoom_h - int(self.active_border * borderScale)
+        zoom_l = self.z_x + int(0.3 * borderScale)
+        zoom_r = self.z_x + int(0.3 * borderScale)
+        #zoom_r = self.z_x + self.zoom_w - int(self.active_border * borderScale)
+        #pprint(zoom_l) # min: 360 max: 4530
+        #pprint(zoom_r) # min: 590 max: 4760
+
+        zoom_u = self.z_y + int(0.25 * borderScale)
+        zoom_d = self.z_y + int(0.25 * borderScale)
+        #zoom_d = self.z_y + self.zoom_h - int(self.active_border * borderScale)
+        #pprint(zoom_u) # min: 360 max: 1088
+        #pprint(zoom_d) # min: 352 max: 1080
 
         # Set smoothing values
         smoothFactor = int((self.smooth * 9) / 10 + 1)
@@ -170,12 +178,8 @@ class CursorWindow:
                 time = self.cubic_in_out(self.zo_timer / totalFrames)
                 i(s, "left", int(((1 - time) * self.z_x)))
                 i(s, "top", int(((1 - time) * self.z_y)))
-                i(
-                    s, "cx", self.zoom_w + int(time * (self.d_w - self.zoom_w)),
-                )
-                i(
-                    s, "cy", self.zoom_h + int(time * (self.d_h - self.zoom_h)),
-                )
+                i(s, "cx", self.zoom_w + int(time * (self.d_w - self.zoom_w)))
+                i(s, "cy", self.zoom_h + int(time * (self.d_h - self.zoom_h)))
             else:
                 i(s, "left", 0)
                 i(s, "top", 0)
@@ -188,12 +192,8 @@ class CursorWindow:
                 time = self.cubic_in_out(self.zi_timer / totalFrames)
                 i(s, "left", int(time * self.z_x))
                 i(s, "top", int(time * self.z_y))
-                i(
-                    s, "cx", self.d_w - int(time * (self.d_w - self.zoom_w)),
-                )
-                i(
-                    s, "cy", self.d_h - int(time * (self.d_h - self.zoom_h)),
-                )
+                i(s, "cx", self.d_w - int(time * (self.d_w - self.zoom_w)))
+                i(s, "cy", self.d_h - int(time * (self.d_h - self.zoom_h)))
             else:
                 i(s, "left", self.z_x)
                 i(s, "top", self.z_y)
@@ -306,7 +306,7 @@ def script_properties():
 
     obs.obs_properties_add_int(props, "Width", "Zoom Window Width", 320, 3840, 1)
     obs.obs_properties_add_int(props, "Height", "Zoom Window Height", 240, 3840, 1)
-    obs.obs_properties_add_float_slider(props, "Border", "Active Border", 0, 0.33, 0.01)
+    obs.obs_properties_add_float_slider(props, "Border", "Active Border", 0, 2.00, 0.01)
     obs.obs_properties_add_int(props, "Speed", "Max Scroll Speed", 0, 540, 10)
     obs.obs_properties_add_float_slider(props, "Smooth", "Smooth", 0, 10, 0.01)
     obs.obs_properties_add_int_slider(props, "Zoom", "Zoom Duration (ms)", 0, 1000, 1)
